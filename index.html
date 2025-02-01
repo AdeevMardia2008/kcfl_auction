@@ -39,7 +39,7 @@
     .container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 1rem;
+      padding: 2rem;
     }
 
     .team-card {
@@ -58,7 +58,6 @@
       text-align: center;
       align-items: center;
       justify-content: center;
-      width: 100%;
     }
 
     th {
@@ -67,16 +66,16 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 0.75rem;
+      padding: 1rem;
     }
 
     td {
-      padding: 0.75rem;
+      padding: 1rem;
       background: white;
       transition: background-color 0.2s ease;
       align-items: center;
-      justify-content: center;
-      text-align: center;
+      justify-content: center; /* Center vertically */
+      text-align: center; /* Ensure text is centered */
     }
 
     tr:hover td {
@@ -111,8 +110,6 @@
       margin-right: 0.5rem;
       background-color: white;
       transition: all 0.2s ease;
-      width: 100%;
-      max-width: 150px;
     }
 
     select:focus {
@@ -125,7 +122,6 @@
       display: flex;
       gap: 1rem;
       margin-top: 2rem;
-      flex-wrap: wrap;
     }
 
     .finish-button, .reset-button {
@@ -135,8 +131,6 @@
       transition: all 0.3s ease;
       border: none;
       cursor: pointer;
-      flex: 1;
-      min-width: 150px;
     }
 
     .finish-button {
@@ -163,28 +157,31 @@
     }
 
     .player-stats-card {
-      width: 80px;
+      width: 150px;
       height: auto;
-      margin-right: 0.5rem;
+      margin-right: 1rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 12px;
-      overflow: hidden;
+      border-radius: 12px; /* Rounded corners */
+      overflow: hidden; /* Ensures images or content inside respect the border-radius */
     }
 
     .player-stats-card:hover {
-      transform: scale(1.5);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      border-radius: 16px;
+      transform: scale(1.5); /* Increase size */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+      border-radius: 16px; /* Slightly more rounded on hover for a smooth effect */
     }
 
+
+
     .player-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 100%;
-    }
+  display: flex;
+  flex-direction: column; /* Stack image and name vertically */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  text-align: center; /* Ensure text is centered */
+  width: 100%; /* Ensure full width of the table cell */
+}
+
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -194,61 +191,19 @@
     .animate-fade-in {
       animation: fadeIn 0.5s ease forwards;
     }
-
-    @media (max-width: 768px) {
-      header .container {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      header img {
-        margin-right: 0;
-        margin-bottom: 1rem;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      .container {
-        padding: 0.5rem;
-      }
-
-      table {
-        font-size: 0.9rem;
-      }
-
-      th, td {
-        padding: 0.5rem;
-      }
-
-      .bid-button {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-      }
-
-      select {
-        margin-right: 0;
-        margin-bottom: 0.5rem;
-      }
-
-      .player-stats-card {
-        width: 60px;
-      }
-    }
   </style>
 </head>
 <body>
-    <header class="py-8 mb-6">
+    <header class="py-12 mb-8">
         <div class="container flex items-center justify-center">
-            <img src="logo.png" alt="KCFL Logo" class="h-32 w-32 object-contain mr-4 animate-fade-in">
-            <h1 class="text-4xl font-bold text-white animate-fade-in" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2)">KCFL Auction</h1>
+            <img src="logo.png" alt="KCFL Logo" class="h-48 w-48 object-contain mr-8 animate-fade-in">
+            <h1 class="text-6xl font-bold text-white animate-fade-in" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2)">KCFL Auction</h1>
         </div>
     </header>
 
     <div class="container">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Teams</h2>
-        <div class="team-info mb-8">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">Teams</h2>
+        <div class="team-info mb-12">
             <div class="glass-effect rounded-xl overflow-hidden">
                 <table class="w-full">
                     <thead>
@@ -265,8 +220,8 @@
             </div>
         </div>
 
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Players Available</h2>
-        <div class="player-list mb-6">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">Players Available</h2>
+        <div class="player-list mb-8">
             <div class="glass-effect rounded-xl overflow-hidden">
                 <table class="w-full">
                     <thead>
@@ -373,7 +328,7 @@
         function renderPlayers() {
           playerTable.innerHTML = '';
           players.forEach((player, index) => {
-            const statsImage = `${player.name}.png`;
+            const statsImage = `stats/${player.name}.png`;
             playerTable.innerHTML += `
               <tr>
                 <td>
