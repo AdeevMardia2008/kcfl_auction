@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCFL Auction</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+      min-height: 100vh;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 51, 102, 0.1);
+    }
+
+    header {
+      background: url('header.png');
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .team-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 51, 102, 0.15);
+    }
+
+    table {
+      border-radius: 12px;
+      overflow: hidden;
+      border-spacing: 0;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+
+    th {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1rem;
+    }
+
+    td {
+      padding: 1rem;
+      background: white;
+      transition: background-color 0.2s ease;
+      align-items: center;
+      justify-content: center; /* Center vertically */
+      text-align: center; /* Ensure text is centered */
+    }
+
+    tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    .bid-button {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .bid-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    }
+
+    .bid-button:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+    }
+
+    select {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin-right: 0.5rem;
+      background-color: white;
+      transition: all 0.2s ease;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .finish-button, .reset-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .finish-button {
+      background: linear-gradient(135deg, #00c853 0%, #009624 100%);
+      color: white;
+    }
+
+    .reset-button {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+    }
+
+    .finish-button:hover, .reset-button:hover {
+      transform: translateY(-1px);
+      filter: brightness(110%);
+    }
+
+    .budget {
+      font-weight: 600;
+      color: #003366;
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .player-stats-card {
+      width: 150px;
+      height: auto;
+      margin-right: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 12px; /* Rounded corners */
+      overflow: hidden; /* Ensures images or content inside respect the border-radius */
+    }
+
+    .player-stats-card:hover {
+      transform: scale(1.5); /* Increase size */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+      border-radius: 16px; /* Slightly more rounded on hover for a smooth effect */
+    }
+
+
+
+    .player-info {
+  display: flex;
+  flex-direction: column; /* Stack image and name vertically */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  text-align: center; /* Ensure text is centered */
+  width: 100%; /* Ensure full width of the table cell */
+}
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body>
+    <header class="py-12 mb-8">
+        <div class="container flex items-center justify-center">
+            <img src="logo.png" alt="KCFL Logo" class="h-48 w-48 object-contain mr-8 animate-fade-in">
+            <h1 class="text-6xl font-bold text-white animate-fade-in" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2)">KCFL Auction</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">Teams</h2>
+        <div class="team-info mb-12">
+            <div class="glass-effect rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Remaining Budget</th>
+                            <th>Players Bought</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teamTable">
+                        <!-- Teams will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">Players Available</h2>
+        <div class="player-list mb-8">
+            <div class="glass-effect rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th>Player Info</th>
+                            <th>Starting Price</th>
+                            <th>Current Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerTable">
+                        <!-- Players will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button onclick="finishAuction()" class="finish-button">Finish Auction</button>
+            <button onclick="resetAuction()" class="reset-button">Reset Auction</button>
+        </div>
+    </div>
+
+    <script>
+        const playerData = {
+            "Adeev": 100000,
+            "Mukundan": 80000,
+            "Kavin": 40000,
+            "Abhyuday": 85000,
+            "Sanjith": 90000,
+            "Pradyun": 65000,
+            "Devanathan": 20000,
+            "Vaishnav": 5000,
+            "Siddhant": 40000,
+            "Raghava": 25000,
+            "Daksh": 5000,
+            "Rayansh": 69000,
+            "Omar": 25000,
+            "Arnav": 5000,
+            "Arjun": 35000,
+            "Pranav Y": 25000,
+            "Pranav": 80000,
+            "Maarkesh": 60000,
+            "Magizh": 120000,
+            "Ethan": 45000,
+            "Rohan": 30000,
+            "Sriijan": 500,
+            "Arhan": 25000,
+            "Anirudh": 110000,
+            "Arsh": 15000,
+            "Sanjay": 95000,
+            "Akhil": 25000,
+            "Arya": 110000,
+            "Krish": 20000,
+            "Aditya": 75000,
+            "Ayaan": 25000,
+            "Vidyut": 5000,
+            "Sidharth": 5000,
+            "Tejas": 10000,
+            "Chanan": 10000,
+            "Keshav": 35000,
+            "Arya Goudham": 5000,
+            "Joshua": 7000,
+            "Aman": 70000,
+            "Yejun": 50000,
+            "Pratham": 15000,
+            "Darsh Pershad": 150000
+        };
+
+        const playerNames = Object.keys(playerData);
+
+        const initialTeams = [
+          { name: "Butter Chicken Rajas", budget: 1000000, players: [] },
+          { name: "Experimental Gravy", budget: 1000000, players: [] },
+          { name: "Bakri FC", budget: 1000000, players: [] },
+          { name: "Ball Handlers", budget: 1000000, players: [] },
+          { name: "Rizzlers", budget: 1000000, players: [] }
+        ];
+
+        const teams = JSON.parse(localStorage.getItem('teams')) || initialTeams;
+        const players = JSON.parse(localStorage.getItem('players')) || playerNames.map(name => ({ 
+            name, 
+            startingPrice: playerData[name],
+            price: 0, 
+            boughtBy: null 
+        }));
+
+        const teamTable = document.getElementById('teamTable');
+        const playerTable = document.getElementById('playerTable');
+
+        function renderTeams() {
+          teamTable.innerHTML = '';
+          teams.forEach(team => {
+            teamTable.innerHTML += `
+              <tr class="team-card">
+                <td>${team.name}</td>
+                <td><span class="budget">$${team.budget.toLocaleString('en-US')}</span></td>
+                <td>${team.players.join(', ') || 'None'}</td>
+              </tr>
+            `;
+          });
+        }
+
+        function renderPlayers() {
+          playerTable.innerHTML = '';
+          players.forEach((player, index) => {
+            const statsImage = `stats/${player.name}.png`;
+            playerTable.innerHTML += `
+              <tr>
+                <td>
+                  <div class="player-info">
+                    <img src="${statsImage}" alt="${player.name} Stats" class="player-stats-card">
+                    <span>${player.name}</span>
+                  </div>
+                </td>
+                <td>$${player.startingPrice.toLocaleString('en-US')}</td>
+                <td>$${player.price.toLocaleString('en-US')}</td>
+                <td>
+                  <select id="teamSelect${index}" ${player.boughtBy ? 'disabled' : ''}>
+                    <option value="">Select Team</option>
+                    ${teams.map((team, i) => `<option value="${i}">${team.name}</option>`).join('')}
+                  </select>
+                  <button class="bid-button" onclick="buyPlayer(${index})" ${player.boughtBy ? 'disabled' : ''}>
+                    Buy
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+
+        function buyPlayer(playerIndex) {
+          const player = players[playerIndex];
+          const teamIndex = document.getElementById(`teamSelect${playerIndex}`).value;
+
+          if (teamIndex === "") {
+            alert("Please select a team.");
+            return;
+          }
+
+          const team = teams[teamIndex];
+          const bidAmount = prompt(`Enter bid amount for ${player.name}:`, player.startingPrice);
+
+          if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
+            alert("Invalid bid amount.");
+            return;
+          }
+
+          const bid = parseInt(bidAmount);
+
+          if (bid < player.startingPrice) {
+            alert(`Bid must be at least the starting price of $${player.startingPrice.toLocaleString('en-US')}`);
+            return;
+          }
+
+          if (team.budget >= bid) {
+            team.budget -= bid;
+            team.players.push(player.name);
+            player.price = bid;
+            player.boughtBy = team.name;
+
+            localStorage.setItem('teams', JSON.stringify(teams));
+            localStorage.setItem('players', JSON.stringify(players));
+
+            renderTeams();
+            renderPlayers();
+          } else {
+            alert("Insufficient budget.");
+          }
+        }
+
+        function finishAuction() {
+          const data = [
+            ["Team Name", "Remaining Budget", "Players Bought"],
+            ...teams.map(team => [team.name, `$${team.budget}`, team.players.join(', ')])
+          ];
+
+          const csvContent = data.map(row => row.join(",")).join("\n");
+          const blob = new Blob([csvContent], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "KCFL_Auction_Results.csv";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          alert("Auction finished! Results have been downloaded.");
+        }
+
+        function resetAuction() {
+          if (confirm("Are you sure you want to reset the auction? This action cannot be undone.")) {
+            localStorage.clear();
+            location.reload();
+          }
+        }
+
+        renderTeams();
+        renderPlayers();
+    </script>
+</body>
+</html>
